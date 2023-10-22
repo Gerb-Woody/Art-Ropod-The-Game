@@ -38,10 +38,6 @@ public class CentipedeMovement : MonoBehaviour {
         else if (!Input.anyKey) {
             ResetSteps();
         }
-
-        if (Input.GetKeyDown(KeyCode.J)) {
-            transform.rotation = Quaternion.Euler(-90, transform.rotation.y, transform.rotation.z);
-        }
     }
 
     private void MoveCentipede() {
