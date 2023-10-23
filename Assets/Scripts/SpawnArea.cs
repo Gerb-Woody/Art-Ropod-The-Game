@@ -1,17 +1,33 @@
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class SpawnArea : MonoBehaviour
 {
-    [Header("Child Positions")]
-    public Transform oneEnd;
-    public Transform otherEnd;
+
+
+    [Header("Launch Constraints")]
+    public float launchPower = 1.0f;
+    public float launchFrequency = 3.0f;
+    public float minX;
+    public float maxX;
+    public float minY;
+    public float maxY;
+    public float minZ;
+    public float maxZ;
 
     [Header("Objects to Summon")]
     public GameObject[] randomObstacles;
+
+    [Header("Interactive Child Components")]
+    public Transform oneEnd;
+    public Transform otherEnd;
+    public BoxCollider startZone;
+    public BoxCollider stopZone;
 
     //Vector3 spawnPos = Vector3.zero;
     // Start is called before the first frame update
@@ -22,7 +38,7 @@ public class SpawnArea : MonoBehaviour
 
     public void BeginSpawning()
     {
-        InvokeRepeating("ObjectSummoner", 0f, 9f);
+        InvokeRepeating("ObjectSummoner", 0f, launchFrequency);
     }
 
     public void StopSpawning()
@@ -34,17 +50,25 @@ public class SpawnArea : MonoBehaviour
     // Update is called once per frame
     void ObjectSummoner()
     {
-        Instantiate(ObjectChooser(), ChoosePos(), Quaternion.identity);
-        print("Wow this location sure is " + ChoosePos());
+        GameObject newestGuy = Instantiate(ObjectChooser(), ChoosePos(), RandomRotator());
+        newestGuy.GetComponent<Rigidbody>().velocity = newestGuy.transform.forward * launchPower;
     }
 
     Vector3 ChoosePos()
     {
-        return Vector3.Lerp(oneEnd.position, otherEnd.position, Random.value);
+        return Vector3.Lerp(oneEnd.position, otherEnd.position, UnityEngine.Random.value);
     }
 
     GameObject ObjectChooser()
     {
-        return randomObstacles[Random.Range(0, randomObstacles.Length)];
+        return randomObstacles[UnityEngine.Random.Range(0, randomObstacles.Length)];
+    }
+
+    Quaternion RandomRotator()
+    {
+        float rotX = UnityEngine.Random.Range(minX, maxX);
+        float rotY = UnityEngine.Random.Range(minY, maxY);
+        float rotZ = UnityEngine.Random.Range(minZ, maxZ);
+        return new Quaternion(rotX, rotY, rotZ, 0f);
     }
 }
