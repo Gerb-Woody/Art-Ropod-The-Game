@@ -6,7 +6,6 @@ public class CentipedeMovement : MonoBehaviour {
     [SerializeField] private float rotationSpeed;
 
     private bool[] steps;
-    private float yRotation;
 
     private void Start() {
         steps = new bool[4];

@@ -2,18 +2,33 @@ using UnityEngine;
 
 public class CentipedeStairDetection : MonoBehaviour {
 
+    Rigidbody rb;
+    CapsuleCollider capsuleCollider;
+
+    [SerializeField] private Transform raycastPoint;
+
     private bool forwardRayIsHitting;
     private bool downwardRayIsHitting;
+    private float castDistance = 1.1f;
+
+    private void Awake() {
+        rb = GetComponent<Rigidbody>();
+        capsuleCollider = rb.GetComponent<CapsuleCollider>();
+    }
 
     private void Update() {
         SendRaycasts();
 
         if (forwardRayIsHitting && downwardRayIsHitting) {
             transform.rotation = Quaternion.Euler(-90, transform.rotation.y, transform.rotation.z);
+            rb.useGravity = false;
+            capsuleCollider.enabled = false;
         }
 
         else if (!forwardRayIsHitting && !downwardRayIsHitting) {
             transform.rotation = Quaternion.Euler(0, transform.rotation.y, transform.rotation.z);
+            rb.useGravity = true;
+            capsuleCollider.enabled = true;
         }
     }
 
@@ -21,10 +36,10 @@ public class CentipedeStairDetection : MonoBehaviour {
         RaycastHit forwardHit;
         RaycastHit downwardHit;
 
-        Debug.DrawRay(transform.position, transform.forward * 1, Color.red);
-        Debug.DrawRay(transform.position, -transform.up * 1, Color.red);
+        Debug.DrawRay(raycastPoint.position, transform.forward * castDistance, Color.red);
+        Debug.DrawRay(raycastPoint.position, -transform.up * castDistance, Color.red);
 
-        if (Physics.Raycast(transform.position, transform.forward, out forwardHit, 1f)) {
+        if (Physics.Raycast(raycastPoint.position, transform.forward, out forwardHit, castDistance)) {
             if (forwardHit.collider.tag == "Ground") {
                 forwardRayIsHitting = true;
             }
@@ -34,7 +49,7 @@ public class CentipedeStairDetection : MonoBehaviour {
             forwardRayIsHitting = false;
         }
 
-        if (Physics.Raycast(transform.position, -transform.up, out downwardHit, 1f)) {
+        if (Physics.Raycast(raycastPoint.position, -transform.up, out downwardHit, castDistance)) {
             if (downwardHit.collider.tag == "Ground") {
                 downwardRayIsHitting = true;
             }
