@@ -2,7 +2,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -19,6 +18,7 @@ public class SpawnArea : MonoBehaviour
     public float maxY;
     public float minZ;
     public float maxZ;
+    float scaleMultiplier;
 
     [Header("Objects to Summon")]
     public GameObject[] randomObstacles;
@@ -52,6 +52,7 @@ public class SpawnArea : MonoBehaviour
     {
         GameObject newestGuy = Instantiate(ObjectChooser(), ChoosePos(), RandomRotator());
         newestGuy.GetComponent<Rigidbody>().velocity = newestGuy.transform.forward * launchPower;
+        newestGuy.transform.localScale *= UnityEngine.Random.Range(0.6f, 1.8f);
     }
 
     Vector3 ChoosePos()
