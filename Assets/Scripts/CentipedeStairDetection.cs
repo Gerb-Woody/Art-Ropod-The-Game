@@ -9,7 +9,7 @@ public class CentipedeStairDetection : MonoBehaviour {
 
     private bool forwardRayIsHitting;
     private bool downwardRayIsHitting;
-    private float castDistance = 1.1f;
+    private float castDistance = 0.75f;
 
     private void Awake() {
         rb = GetComponent<Rigidbody>();
@@ -20,13 +20,13 @@ public class CentipedeStairDetection : MonoBehaviour {
         SendRaycasts();
 
         if (forwardRayIsHitting && downwardRayIsHitting) {
-            transform.rotation = Quaternion.Euler(-90, transform.rotation.y, transform.rotation.z);
+            transform.rotation = Quaternion.Euler(-90, transform.rotation.y + 180, transform.rotation.z);
             rb.useGravity = false;
             capsuleCollider.enabled = false;
         }
 
         else if (!forwardRayIsHitting && !downwardRayIsHitting) {
-            transform.rotation = Quaternion.Euler(0, transform.rotation.y, transform.rotation.z);
+            transform.rotation = Quaternion.Euler(0, transform.rotation.y + 180, transform.rotation.z);
             rb.useGravity = true;
             capsuleCollider.enabled = true;
         }
