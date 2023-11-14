@@ -11,7 +11,7 @@ public class SpawnArea : MonoBehaviour
 
     [Header("Launch Constraints")]
     public float launchPower = 1.0f;
-    public float launchFrequency = 3.0f;
+    public float launchFrequency;
     public float minX;
     public float maxX;
     public float minY;
@@ -51,8 +51,7 @@ public class SpawnArea : MonoBehaviour
     void ObjectSummoner()
     {
         GameObject newestGuy = Instantiate(ObjectChooser(), ChoosePos(), RandomRotator());
-        newestGuy.GetComponent<Rigidbody>().velocity = newestGuy.transform.forward * launchPower;
-        newestGuy.transform.localScale *= UnityEngine.Random.Range(0.6f, 1.8f);
+        newestGuy.GetComponent<Rigidbody>().velocity = transform.forward * launchPower;
     }
 
     Vector3 ChoosePos()
