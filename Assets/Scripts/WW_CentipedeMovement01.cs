@@ -9,7 +9,9 @@ public class WW_CentipedeMovement01 : MonoBehaviour
     [SerializeField] private float rotationSpeed;
 
 
-    public KeyCode[] moveButton;
+    public KeyCode[] leftMoveButton;
+    public KeyCode[] rightMoveButton;
+    public Vector2 curVol;
 
     [SerializeField] private bool[] steps;
 
@@ -20,8 +22,9 @@ public class WW_CentipedeMovement01 : MonoBehaviour
 
     private void Update()
     {
+        curVol = GetComponent<Rigidbody>().velocity;
 
-        if (Input.GetKeyDown(moveButton[0]))
+        if (Input.GetKey(leftMoveButton[0]))
         {
             print(1);
             if (!steps[0])
@@ -36,7 +39,7 @@ public class WW_CentipedeMovement01 : MonoBehaviour
             steps[0] = true;
         }
 
-        if (Input.GetKeyDown(moveButton[1]))
+        if (Input.GetKey(leftMoveButton[1]))
         {
             print(2);
             if (steps[0])
@@ -51,7 +54,7 @@ public class WW_CentipedeMovement01 : MonoBehaviour
             steps[1] = true;
         }
 
-        if (Input.GetKeyDown(moveButton[2]))
+        if (Input.GetKey(leftMoveButton[2]))
         {
             print(3);
             if (steps[0] || steps[1])
@@ -66,7 +69,7 @@ public class WW_CentipedeMovement01 : MonoBehaviour
             steps[2] = true;
         }
 
-        if (Input.GetKeyDown(moveButton[3]))
+        if (Input.GetKey(leftMoveButton[3]))
         {
             print(4);
             if (steps[1] || steps[2])
@@ -81,16 +84,76 @@ public class WW_CentipedeMovement01 : MonoBehaviour
             steps[3] = true;
         }
 
-     /*   else if (!Input.anyKey)
+        if (Input.GetKey(rightMoveButton[0]))
         {
+            print(1);
+            if (!steps[0])
+            {
+                MoveCentipede();
+            }
+            else
+            {
+                SlowCentipede();
+            }
             ResetSteps();
-        }*/
+            steps[0] = true;
+        }
+
+        if (Input.GetKey(rightMoveButton[1]))
+        {
+            print(2);
+            if (steps[0])
+            {
+                MoveCentipede();
+            }
+            else
+            {
+                SlowCentipede();
+            }
+            ResetSteps();
+            steps[1] = true;
+        }
+
+        if (Input.GetKey(rightMoveButton[2]))
+        {
+            print(3);
+            if (steps[0] || steps[1])
+            {
+                MoveCentipede();
+            }
+            else
+            {
+                SlowCentipede();
+            }
+            ResetSteps();
+            steps[2] = true;
+        }
+
+        if (Input.GetKey(rightMoveButton[3]))
+        {
+            print(4);
+            if (steps[1] || steps[2])
+            {
+                MoveCentipede();
+            }
+            else
+            {
+                SlowCentipede();
+            }
+            ResetSteps();
+            steps[3] = true;
+        }
+
+        /*   else if (!Input.anyKey)
+           {
+               ResetSteps();
+           }*/
     }
 
     private void MoveCentipede()
     {
         GetComponent<Rigidbody>().velocity += Vector3.forward * moveSpeed;
-       // GetComponent<Rigidbody>().AddForce(Vector3.forward * moveSpeed);
+        // GetComponent<Rigidbody>().AddForce(Vector3.forward * moveSpeed);
     }
 
     private void SlowCentipede()
