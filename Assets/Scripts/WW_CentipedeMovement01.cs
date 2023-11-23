@@ -1,5 +1,6 @@
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class WW_CentipedeMovement01 : MonoBehaviour
@@ -11,9 +12,8 @@ public class WW_CentipedeMovement01 : MonoBehaviour
     [SerializeField] private float moveSpeed;
     [SerializeField] private float leftMoveSpeed;
     [SerializeField] private float rightMoveSpeed;
-    [SerializeField] private float rotationSpeed;
     [SerializeField] private float testRotValue;
-
+    [SerializeField] private float rotMax;
 
     public KeyCode[] leftMoveButton;
     public KeyCode[] rightMoveButton;
@@ -32,9 +32,27 @@ public class WW_CentipedeMovement01 : MonoBehaviour
     {
 
         float tempRatio = Mathf.InverseLerp(0, leftMoveSpeed + rightMoveSpeed, leftMoveSpeed);
-        testRotValue = Mathf.Lerp(-100f, 100f, tempRatio);
+        testRotValue = Mathf.Lerp(-rotMax, rotMax, tempRatio);
+        Transform trg = GetComponent<Transform>();
+
+        Quaternion currentRotation = GetComponent<Transform>().rotation;
+
+        GetComponent<Transform>().rotation = Quaternion.Euler(currentRotation.eulerAngles.x, testRotValue, currentRotation.eulerAngles.z);
+
+
+
         curVol = GetComponent<Rigidbody>().velocity;
 
+
+
+        if (Input.anyKeyDown)
+        {
+            buttCheck();
+        }
+
+    }
+    void buttCheck()
+    {
         if (Input.GetKeyDown(leftMoveButton[0]))
         {
             print(1);
