@@ -5,9 +5,7 @@ using UnityEngine;
 
 public class WW_CentipedeMovement01 : MonoBehaviour
 {
-    //
-    //                      THIS SCRIPT STARTED AS AN EDIT OF CAMERON MOORE'S ORIGINAL SCRIPT CREDIT TO THEM
-    //                                  THOUGH QUICKLY BECAME MOSTLY A NEW SCRIPT
+    
 
     [SerializeField] private float moveSpeed;
     [SerializeField] private float leftMoveSpeed;
@@ -30,6 +28,8 @@ public class WW_CentipedeMovement01 : MonoBehaviour
 
     private void Update()
     {
+        float combinedMoveSpeed = leftMoveSpeed + rightMoveSpeed;
+        GetComponent<Rigidbody>().velocity += GetComponent<Transform>().forward * combinedMoveSpeed * moveSpeed;
 
         float tempRatio = Mathf.InverseLerp(0, leftMoveSpeed + rightMoveSpeed, leftMoveSpeed);
         testRotValue = Mathf.Lerp(-rotMax, rotMax, tempRatio);
