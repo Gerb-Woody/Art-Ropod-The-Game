@@ -5,14 +5,16 @@ using UnityEngine;
 
 public class WW_CentipedeMovement01 : MonoBehaviour
 {
-    
+
 
     [SerializeField] private float moveSpeed;
     [SerializeField] private float leftMoveSpeed;
     [SerializeField] private float rightMoveSpeed;
+    [SerializeField] private float maxMoveSpeed;
     [SerializeField] private float testRotValue;
     [SerializeField] private float newRotValue;
     [SerializeField] private float rotMax;
+    [SerializeField] private float decayRate;
 
     public KeyCode[] leftMoveButton;
     public KeyCode[] rightMoveButton;
@@ -31,17 +33,30 @@ public class WW_CentipedeMovement01 : MonoBehaviour
 
     private void Update()
     {
+
+
+        leftMoveSpeed = Mathf.Lerp(leftMoveSpeed, 0, Time.deltaTime * decayRate);
+        rightMoveSpeed = Mathf.Lerp(rightMoveSpeed, 0, Time.deltaTime * decayRate);
+
+        leftMoveSpeed = Mathf.Clamp(leftMoveSpeed, 0, maxMoveSpeed);
+        rightMoveSpeed = Mathf.Clamp(rightMoveSpeed, 0, maxMoveSpeed);
         float combinedMoveSpeed = (leftMoveSpeed + rightMoveSpeed);
-        GetComponent<Rigidbody>().velocity += GetComponent<Transform>().forward * combinedMoveSpeed * moveSpeed;
+        //        GetComponent<Rigidbody>().velocity += GetComponent<Transform>().forward * combinedMoveSpeed * moveSpeed;
+        GetComponent<Rigidbody>().AddForce(transform.forward * combinedMoveSpeed * moveSpeed, ForceMode.VelocityChange);
+
 
         float tempRatio = Mathf.InverseLerp(0, leftMoveSpeed + rightMoveSpeed, leftMoveSpeed);
         testRotValue = Mathf.Lerp(-rotMax, rotMax, tempRatio);
         Transform trg = GetComponent<Transform>();
 
         Quaternion currentRotation = trg.rotation;
-        if (leftMoveSpeed == 0 && rightMoveSpeed == 0)
+        if (leftMoveSpeed <= 0.1 && rightMoveSpeed <= 0.1)
+        {
             testRotValue = 0f;
-        newRotValue = Mathf.Lerp(newRotValue, newRotValue+testRotValue, Time.deltaTime);
+            leftMoveSpeed = 0f;
+            rightMoveSpeed = 0f;
+        }
+        newRotValue = Mathf.Lerp(newRotValue, newRotValue + testRotValue, Time.deltaTime);
         Mathf.Clamp(newRotValue, trg.rotation.x - rotMax, trg.rotation.x + rotMax);
 
         trg.rotation = Quaternion.Euler(currentRotation.eulerAngles.x, newRotValue, currentRotation.eulerAngles.z);
