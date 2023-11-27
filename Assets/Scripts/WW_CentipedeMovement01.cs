@@ -41,8 +41,7 @@ public class WW_CentipedeMovement01 : MonoBehaviour
         leftMoveSpeed = Mathf.Clamp(leftMoveSpeed, 0, maxMoveSpeed);
         rightMoveSpeed = Mathf.Clamp(rightMoveSpeed, 0, maxMoveSpeed);
         float combinedMoveSpeed = (leftMoveSpeed + rightMoveSpeed);
-        //        GetComponent<Rigidbody>().velocity += GetComponent<Transform>().forward * combinedMoveSpeed * moveSpeed;
-        GetComponent<Rigidbody>().AddForce(transform.forward * combinedMoveSpeed * moveSpeed, ForceMode.VelocityChange);
+        GetComponent<Rigidbody>().velocity += GetComponent<Transform>().forward * combinedMoveSpeed * moveSpeed;
 
 
         float tempRatio = Mathf.InverseLerp(0, leftMoveSpeed + rightMoveSpeed, leftMoveSpeed);
