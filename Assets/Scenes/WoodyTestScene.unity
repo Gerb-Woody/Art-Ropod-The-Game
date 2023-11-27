@@ -1364,10 +1364,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b68081036eb7ab498b2925aa235e4d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 0.1
+  moveSpeed: 0.001
   leftMoveSpeed: 0
   rightMoveSpeed: 0
   testRotValue: 0
+  newRotValue: 0
   rotMax: 90
   leftMoveButton: 61000000730000006400000066000000
   rightMoveButton: 6c0000006b0000006a00000068000000

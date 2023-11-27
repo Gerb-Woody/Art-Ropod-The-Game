@@ -11,6 +11,7 @@ public class WW_CentipedeMovement01 : MonoBehaviour
     [SerializeField] private float leftMoveSpeed;
     [SerializeField] private float rightMoveSpeed;
     [SerializeField] private float testRotValue;
+    [SerializeField] private float newRotValue;
     [SerializeField] private float rotMax;
 
     public KeyCode[] leftMoveButton;
@@ -24,21 +25,26 @@ public class WW_CentipedeMovement01 : MonoBehaviour
     {
         leftSteps = new bool[4];
         rightSteps = new bool[4];
+
+        newRotValue = GetComponent<Transform>().rotation.x;
     }
 
     private void Update()
     {
-        float combinedMoveSpeed = leftMoveSpeed + rightMoveSpeed;
+        float combinedMoveSpeed = (leftMoveSpeed + rightMoveSpeed);
         GetComponent<Rigidbody>().velocity += GetComponent<Transform>().forward * combinedMoveSpeed * moveSpeed;
 
         float tempRatio = Mathf.InverseLerp(0, leftMoveSpeed + rightMoveSpeed, leftMoveSpeed);
         testRotValue = Mathf.Lerp(-rotMax, rotMax, tempRatio);
         Transform trg = GetComponent<Transform>();
 
-        Quaternion currentRotation = GetComponent<Transform>().rotation;
+        Quaternion currentRotation = trg.rotation;
+        if (leftMoveSpeed == 0 && rightMoveSpeed == 0)
+            testRotValue = 0f;
+        newRotValue = Mathf.Lerp(newRotValue, newRotValue+testRotValue, Time.deltaTime);
+        Mathf.Clamp(newRotValue, trg.rotation.x - rotMax, trg.rotation.x + rotMax);
 
-        GetComponent<Transform>().rotation = Quaternion.Euler(currentRotation.eulerAngles.x, testRotValue, currentRotation.eulerAngles.z);
-
+        trg.rotation = Quaternion.Euler(currentRotation.eulerAngles.x, newRotValue, currentRotation.eulerAngles.z);
 
 
         curVol = GetComponent<Rigidbody>().velocity;
