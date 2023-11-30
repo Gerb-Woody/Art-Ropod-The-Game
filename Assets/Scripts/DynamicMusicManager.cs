@@ -1,0 +1,111 @@
+using System.Collections;
+using UnityEngine;
+
+public class DynamicMusicManager : MonoBehaviour {
+
+    [SerializeField] private SceneLoader sceneLoader;
+    [SerializeField] private Transform player;
+    [SerializeField] private Transform cresendoPoint;
+
+    [Header("Music Variables")]
+    [SerializeField] private AudioSource[] musicSources; // 0 - Low | 1 - Mid | 2 - High
+    [SerializeField] private float fadeAmount = 0.01f;
+    [SerializeField] private int fadeLengthInSeconds = 5;
+
+    [SerializeField] private AudioSource currentMusic;
+
+    private bool playerReachedEnd;
+
+    private void Start() {
+        SetAllMusicVolumeAtStart();
+
+        currentMusic = musicSources[0];
+        StartCoroutine(FadeInLowMusic());
+    }
+
+    private void Update() {
+        print($"Distance: {PlayerDistanceToCresendo()}");
+
+        if (!playerReachedEnd) {
+            if ((PlayerDistanceToCresendo() > 46f) && (currentMusic != musicSources[0])) {
+                StartCoroutine(FadeInLowMusic());
+            }
+
+            else if ((PlayerDistanceToCresendo() <= 46f && PlayerDistanceToCresendo() > 6f) && (currentMusic != musicSources[1])) {
+                StartCoroutine(FadeInMidMusic());
+            }
+
+            else if ((PlayerDistanceToCresendo() <= 6f) && (currentMusic != musicSources[2])) {
+                playerReachedEnd = true;
+                StartCoroutine(FadeInHighMusic());
+            }
+        }
+    }
+
+    private void SetAllMusicVolumeAtStart() {
+        musicSources[0].volume = 0f;
+        musicSources[1].volume = 0f;
+        musicSources[2].volume = 0f;
+    }
+
+    private IEnumerator FadeInLowMusic() {
+        if (currentMusic != musicSources[0]) {
+            while (musicSources[0].volume < 1) {
+                currentMusic.volume -= fadeAmount;
+                musicSources[0].volume += fadeAmount;
+                yield return new WaitForSeconds(fadeAmount * fadeLengthInSeconds);
+            }
+
+            currentMusic = musicSources[0];
+        }
+
+        else {
+            while (currentMusic.volume < 1) {
+                currentMusic.volume += fadeAmount;
+                yield return new WaitForSeconds(fadeAmount * fadeLengthInSeconds);
+            }
+        }
+
+        ResetMusicVolume();
+    }
+
+    private IEnumerator FadeInMidMusic() {
+        while (musicSources[1].volume < 1) {
+            currentMusic.volume -= fadeAmount;
+            musicSources[1].volume += fadeAmount;
+            yield return new WaitForSeconds(fadeAmount * fadeLengthInSeconds);
+        }
+
+        currentMusic = musicSources[1];
+    }
+
+    private IEnumerator FadeInHighMusic() {
+        musicSources[2].Play();
+
+        while (musicSources[2].volume < 1) {
+            currentMusic.volume -= fadeAmount;
+            musicSources[2].volume += fadeAmount;
+            yield return new WaitForSeconds(fadeAmount * fadeLengthInSeconds);
+        }
+
+        currentMusic = musicSources[2];
+
+        Invoke("CallBackToMainMenu", 65f);
+    }
+
+    private void CallBackToMainMenu() {
+        sceneLoader.BackToMainMenu();
+    }
+
+    private float PlayerDistanceToCresendo() {
+        return Vector3.Distance(player.position, cresendoPoint.position);
+    }
+
+    private void ResetMusicVolume() {
+        foreach (AudioSource music in musicSources) {
+            if (music != currentMusic) {
+                music.volume = 0;
+            }
+        }
+    }
+}
