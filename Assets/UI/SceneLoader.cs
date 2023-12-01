@@ -36,7 +36,7 @@ public class SceneLoader : MonoBehaviour
             a += fadeAmountPerPass;
             fadeScreen.color = new Color(0, 0, 0, a);
 
-            yield return new WaitForSeconds(fadeAmountPerPass * fadeTimer);
+            yield return new WaitForSecondsRealtime(fadeAmountPerPass * fadeTimer);
         }
 
         LoadScene(sceneIndex);
@@ -51,7 +51,7 @@ public class SceneLoader : MonoBehaviour
             a -= fadeAmountPerPass;
             fadeScreen.color = new Color(0, 0, 0, a);
 
-            yield return new WaitForSeconds(fadeAmountPerPass * fadeTimer);
+            yield return new WaitForSecondsRealtime(fadeAmountPerPass * fadeTimer);
         }
 
         fadeScreen.raycastTarget = false;
