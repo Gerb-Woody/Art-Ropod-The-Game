@@ -7,6 +7,7 @@ public class SceneLoader : MonoBehaviour
     [SerializeField] private UnityEngine.UI.RawImage fadeScreen;
 
     private void Start() {
+        fadeScreen.color = new Color(0, 0, 0, 1);
         StartCoroutine(FadeGameIn());
     }
 
@@ -30,7 +31,7 @@ public class SceneLoader : MonoBehaviour
 
         fadeScreen.raycastTarget = true;
 
-        while (fadeScreen.color.a < 1f) {
+        while (fadeScreen.color.a < 1) {
             float a = fadeScreen.color.a;
             a += fadeAmountPerPass;
             fadeScreen.color = new Color(0, 0, 0, a);
@@ -45,7 +46,7 @@ public class SceneLoader : MonoBehaviour
         int fadeTimer = 3;
         float fadeAmountPerPass = 0.01f;
 
-        while (fadeScreen.color.a > 0f) {
+        while (fadeScreen.color.a > 0) {
             float a = fadeScreen.color.a;
             a -= fadeAmountPerPass;
             fadeScreen.color = new Color(0, 0, 0, a);

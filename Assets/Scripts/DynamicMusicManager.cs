@@ -15,6 +15,7 @@ public class DynamicMusicManager : MonoBehaviour {
     [SerializeField] private AudioSource currentMusic;
 
     private bool playerReachedEnd;
+    private bool routineIsRunning;
 
     private void Start() {
         SetAllMusicVolumeAtStart();
@@ -27,15 +28,15 @@ public class DynamicMusicManager : MonoBehaviour {
         print($"Distance: {PlayerDistanceToCresendo()}");
 
         if (!playerReachedEnd) {
-            if ((PlayerDistanceToCresendo() > 46f) && (currentMusic != musicSources[0])) {
+            if ((PlayerDistanceToCresendo() > 46f) && (currentMusic != musicSources[0]) && !routineIsRunning) {
                 StartCoroutine(FadeInLowMusic());
             }
 
-            else if ((PlayerDistanceToCresendo() <= 46f && PlayerDistanceToCresendo() > 6f) && (currentMusic != musicSources[1])) {
+            else if ((PlayerDistanceToCresendo() <= 46f && PlayerDistanceToCresendo() > 6f) && (currentMusic != musicSources[1]) && !routineIsRunning) {
                 StartCoroutine(FadeInMidMusic());
             }
 
-            else if ((PlayerDistanceToCresendo() <= 6f) && (currentMusic != musicSources[2])) {
+            else if ((PlayerDistanceToCresendo() <= 6f) && (currentMusic != musicSources[2]) && !routineIsRunning) {
                 playerReachedEnd = true;
                 StartCoroutine(FadeInHighMusic());
             }
@@ -49,6 +50,8 @@ public class DynamicMusicManager : MonoBehaviour {
     }
 
     private IEnumerator FadeInLowMusic() {
+        routineIsRunning = true;
+
         if (currentMusic != musicSources[0]) {
             while (musicSources[0].volume < 1) {
                 currentMusic.volume -= fadeAmount;
@@ -66,10 +69,13 @@ public class DynamicMusicManager : MonoBehaviour {
             }
         }
 
+        routineIsRunning = false;
         ResetMusicVolume();
     }
 
     private IEnumerator FadeInMidMusic() {
+        routineIsRunning = true;
+
         while (musicSources[1].volume < 1) {
             currentMusic.volume -= fadeAmount;
             musicSources[1].volume += fadeAmount;
@@ -77,6 +83,8 @@ public class DynamicMusicManager : MonoBehaviour {
         }
 
         currentMusic = musicSources[1];
+        routineIsRunning = false;
+        ResetMusicVolume();
     }
 
     private IEnumerator FadeInHighMusic() {
@@ -89,8 +97,8 @@ public class DynamicMusicManager : MonoBehaviour {
         }
 
         currentMusic = musicSources[2];
-
         Invoke("CallBackToMainMenu", 65f);
+        ResetMusicVolume();
     }
 
     private void CallBackToMainMenu() {

@@ -5,15 +5,22 @@ using UnityEngine;
 public class ObjectWillHitScript : MonoBehaviour
 {
     public bool willHitCentipede = true;
-    // Start is called before the first frame update
-    void Start()
+
+    private void Start()
     {
-        
+        StartCoroutine(Lifetime());
     }
 
-    // Update is called once per frame
-    void Update()
+    private IEnumerator Lifetime()
     {
-        
+        int timer = 20;
+
+        while (timer > 0)
+        {
+            yield return new WaitForSeconds(1f);
+            timer--;
+        }
+
+        Destroy(gameObject);
     }
 }
