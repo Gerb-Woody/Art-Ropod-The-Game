@@ -57,9 +57,9 @@ public class WW_CentipedeMovement01 : MonoBehaviour
         }
         newRotValue = Mathf.Lerp(newRotValue, newRotValue + testRotValue, Time.deltaTime);
         Mathf.Clamp(newRotValue, trg.rotation.x - rotMax, trg.rotation.x + rotMax);
-
-        trg.rotation = Quaternion.Euler(currentRotation.eulerAngles.x, newRotValue, currentRotation.eulerAngles.z);
-
+        
+        trg.eulerAngles = new Vector3(currentRotation.eulerAngles.x, newRotValue, currentRotation.eulerAngles.z);
+      //  trg.Rotate(Vector3.up, newRotValue, Space.Self);
 
         curVol = GetComponent<Rigidbody>().velocity;
 
@@ -213,6 +213,20 @@ public class WW_CentipedeMovement01 : MonoBehaviour
         for (int i = 0; i < steps.Length; i++)
         {
             steps[i] = false;
+        }
+    }
+
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        // Check if the collision is with an object tagged as "Wall"
+        if (collision.gameObject.CompareTag("Climbable"))
+        {
+            // Calculate the rotation to align the "Down" direction with the collision normal
+            Quaternion targetRotation = Quaternion.FromToRotation(transform.up, -collision.contacts[0].normal) * transform.rotation;
+            print("Please work");
+            // Apply the rotation to your object
+            transform.rotation = targetRotation;
         }
     }
 
