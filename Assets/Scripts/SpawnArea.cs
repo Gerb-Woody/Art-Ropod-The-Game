@@ -7,8 +7,6 @@ using UnityEngine;
 
 public class SpawnArea : MonoBehaviour
 {
-
-
     [Header("Launch Constraints")]
     public float launchPower = 1.0f;
     public float launchFrequency;
