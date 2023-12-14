@@ -71,7 +71,7 @@ public class WW_CentipedeMovement01 : MonoBehaviour
         {
             newRotValue = Mathf.Lerp(newRotValue, newRotValue + testRotValue, Time.deltaTime);
             Mathf.Clamp(newRotValue, trg.rotation.z - rotMax, trg.rotation.z + rotMax);
-            trg.GetComponent<Rigidbody>().AddForce(9.8f, 0f, 0f);
+            trg.GetComponent<Rigidbody>().AddForce(0f, 0f, 2f);
            // trg.rotation = Quaternion.Euler( newRotValue, currentRotation.eulerAngles.x, currentRotation.eulerAngles.x);
         }
 
