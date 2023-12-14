@@ -10,7 +10,7 @@ public class ObjectLifetime : MonoBehaviour
 
     private IEnumerator Lifetime()
     {
-        int timer = 20;
+        int timer = 25;
 
         while (timer > 0)
         {

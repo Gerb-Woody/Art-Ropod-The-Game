@@ -23,8 +23,6 @@ public class DynamicMusicManager : MonoBehaviour {
     }
 
     private void Update() {
-        print($"Distance: {PlayerDistanceToCresendo()}");
-
         if (!playerReachedEnd) {
             if ((PlayerDistanceToCresendo() > 46f) && (currentMusic != musicSources[0]) && !routineIsRunning) {
                 StartCoroutine(FadeInLowMusic());
