@@ -15,6 +15,8 @@ public class WW_CentipedeMovement01 : MonoBehaviour
     [SerializeField] private float newRotValue;
     [SerializeField] private float rotMax;
     [SerializeField] private float decayRate;
+    [SerializeField] private float maxCrawlSpeed;
+    [SerializeField] private float upNewRotValue;
 
     public KeyCode[] leftMoveButton;
     public KeyCode[] rightMoveButton;
@@ -22,18 +24,20 @@ public class WW_CentipedeMovement01 : MonoBehaviour
 
     [SerializeField] private bool[] leftSteps;
     [SerializeField] private bool[] rightSteps;
+    [SerializeField] private bool climbingWall;
 
     private void Start()
     {
         leftSteps = new bool[4];
         rightSteps = new bool[4];
 
-        newRotValue = GetComponent<Transform>().rotation.x;
+        newRotValue = transform.rotation.y;
+        upNewRotValue = transform.rotation.eulerAngles.x;
     }
 
     private void Update()
     {
-
+        GetComponent<Rigidbody>().velocity = GetComponent<Rigidbody>().velocity.normalized * Mathf.Clamp(GetComponent<Rigidbody>().velocity.magnitude, 0f, maxCrawlSpeed);
 
         leftMoveSpeed = Mathf.Lerp(leftMoveSpeed, 0, Time.deltaTime * decayRate);
         rightMoveSpeed = Mathf.Lerp(rightMoveSpeed, 0, Time.deltaTime * decayRate);
@@ -55,14 +59,32 @@ public class WW_CentipedeMovement01 : MonoBehaviour
             leftMoveSpeed = 0f;
             rightMoveSpeed = 0f;
         }
-        newRotValue = Mathf.Lerp(newRotValue, newRotValue + testRotValue, Time.deltaTime);
+
+        if (!climbingWall)
+        {
+            newRotValue = Mathf.Lerp(newRotValue, newRotValue + testRotValue, Time.deltaTime);
+            Mathf.Clamp(newRotValue, trg.rotation.x - rotMax, trg.rotation.x + rotMax);
+
+            trg.localRotation = Quaternion.Euler(currentRotation.eulerAngles.x, newRotValue, currentRotation.eulerAngles.z);
+        }
+        else if (climbingWall)
+        {
+            newRotValue = Mathf.Lerp(newRotValue, newRotValue + testRotValue, Time.deltaTime);
+            Mathf.Clamp(newRotValue, trg.rotation.z - rotMax, trg.rotation.z + rotMax);
+            trg.GetComponent<Rigidbody>().AddForce(9.8f, 0f, 0f);
+           // trg.rotation = Quaternion.Euler( newRotValue, currentRotation.eulerAngles.x, currentRotation.eulerAngles.x);
+        }
+
+
+
+        /*newRotValue = Mathf.Lerp(newRotValue, newRotValue + testRotValue, Time.deltaTime);
         Mathf.Clamp(newRotValue, trg.rotation.x - rotMax, trg.rotation.x + rotMax);
 
-        //trg.localRotation = Quaternion.Euler(currentRotation.eulerAngles.x, newRotValue, currentRotation.eulerAngles.z);
+        trg.localRotation = Quaternion.Euler(currentRotation.eulerAngles.x, newRotValue, currentRotation.eulerAngles.z);*/
 
         //trg.localRotation *= Quaternion.Euler(0f, newRotValue, 0f);
-        Quaternion hopefullyFunctionalTurning = Quaternion.AngleAxis(newRotValue, trg.up);
-        trg.rotation = hopefullyFunctionalTurning;
+        /*  Quaternion hopefullyFunctionalTurning = Quaternion.AngleAxis(newRotValue, trg.up);
+          trg.rotation = hopefullyFunctionalTurning;*/
         //  trg.Rotate(Vector3.up, newRotValue, Space.Self);
 
         curVol = GetComponent<Rigidbody>().velocity;
@@ -78,7 +100,6 @@ public class WW_CentipedeMovement01 : MonoBehaviour
     {
         if (Input.GetKeyDown(leftMoveButton[0]))
         {
-            print(1);
             if (!leftSteps[0])
             {
                 leftMoveSpeed++;
@@ -93,7 +114,6 @@ public class WW_CentipedeMovement01 : MonoBehaviour
 
         if (Input.GetKeyDown(leftMoveButton[1]))
         {
-            print(2);
             if (leftSteps[0])
             {
                 leftMoveSpeed++;
@@ -109,7 +129,6 @@ public class WW_CentipedeMovement01 : MonoBehaviour
 
         if (Input.GetKeyDown(leftMoveButton[2]))
         {
-            print(3);
             if (leftSteps[0] || leftSteps[1])
             {
                 leftMoveSpeed++;
@@ -124,7 +143,6 @@ public class WW_CentipedeMovement01 : MonoBehaviour
 
         if (Input.GetKeyDown(leftMoveButton[3]))
         {
-            print(4);
             if (leftSteps[1] || leftSteps[2])
             {
                 leftMoveSpeed++;
@@ -139,7 +157,6 @@ public class WW_CentipedeMovement01 : MonoBehaviour
 
         if (Input.GetKeyDown(rightMoveButton[0]))
         {
-            print(1);
             if (!rightSteps[0])
             {
                 rightMoveSpeed++;
@@ -154,7 +171,6 @@ public class WW_CentipedeMovement01 : MonoBehaviour
 
         if (Input.GetKeyDown(rightMoveButton[1]))
         {
-            print(2);
             if (rightSteps[0])
             {
                 rightMoveSpeed++;
@@ -170,7 +186,6 @@ public class WW_CentipedeMovement01 : MonoBehaviour
 
         if (Input.GetKeyDown(rightMoveButton[2]))
         {
-            print(3);
             if (rightSteps[0] || rightSteps[1])
             {
                 rightMoveSpeed++;
@@ -186,7 +201,6 @@ public class WW_CentipedeMovement01 : MonoBehaviour
 
         if (Input.GetKeyDown(rightMoveButton[3]))
         {
-            print(4);
             if (rightSteps[1] || rightSteps[2])
             {
                 rightMoveSpeed++;
@@ -223,11 +237,20 @@ public class WW_CentipedeMovement01 : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         // Check if the collision is with an object tagged as "Wall"
-        if (collision.gameObject.CompareTag("Climbable"))
+        if (collision.gameObject.CompareTag("Wall"))
         {
+            climbingWall = true;
+            // Calculate the rotation to align the "Down" direction with the collision normal
+            // Quaternion targetRotation = Quaternion.FromToRotation(transform.up, collision.contacts[0].normal) * transform.rotation;
+             Quaternion targetRotation = Quaternion.Euler(-90f, 0f, 0f);
+            // Apply the rotation to your object
+            transform.rotation = targetRotation;
+        }
+        if (collision.gameObject.CompareTag("Floor"))
+        {
+            climbingWall = false;
             // Calculate the rotation to align the "Down" direction with the collision normal
             Quaternion targetRotation = Quaternion.FromToRotation(transform.up, collision.contacts[0].normal) * transform.rotation;
-            print("Please work");
             // Apply the rotation to your object
             transform.rotation = targetRotation;
         }
