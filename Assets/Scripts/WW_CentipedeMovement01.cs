@@ -6,7 +6,10 @@ using UnityEngine;
 public class WW_CentipedeMovement01 : MonoBehaviour
 {
 
+    [Header("SPEED MULTIPLIER"), SerializeField] float speedMult = .1f;  //Speed multiplier for rescaled character
+    [Header("PUSH POWER"), SerializeField, Tooltip("This is the value or power pushing the centipede against the wall, or up onto the ledge")] float pushPower = .1f;  //Speed multiplier for rescaled character
 
+    [Header("")]
     [SerializeField] private float moveSpeed;
     [SerializeField] private float leftMoveSpeed;
     [SerializeField] private float rightMoveSpeed;
@@ -28,7 +31,6 @@ public class WW_CentipedeMovement01 : MonoBehaviour
 
 
 
-    [SerializeField] float speedMult = .1f;  //Speed multiplier for rescaled character
     private void Start()
     {
         leftSteps = new bool[4];
@@ -76,7 +78,7 @@ public class WW_CentipedeMovement01 : MonoBehaviour
         {
             newRotValue = Mathf.Lerp(newRotValue, newRotValue + testRotValue, Time.deltaTime);
             Mathf.Clamp(newRotValue, trg.rotation.z - rotMax, trg.rotation.z + rotMax);
-            trg.GetComponent<Rigidbody>().AddForce(0f, 0f, 2f);
+            trg.GetComponent<Rigidbody>().AddForce(0f, 0f, pushPower);
            // trg.rotation = Quaternion.Euler( newRotValue, currentRotation.eulerAngles.x, currentRotation.eulerAngles.x);
         }
 
