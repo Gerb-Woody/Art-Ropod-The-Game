@@ -6,14 +6,12 @@ public class DynamicMusicManager : MonoBehaviour {
     [SerializeField] private SceneLoader sceneLoader;
     [SerializeField] private Transform player;
     [SerializeField] private Transform cresendoPoint;
-
-    [Header("Music Variables")]
     [SerializeField] private AudioSource[] musicSources; // 0 - Low | 1 - Mid | 2 - High
-    [SerializeField] private float fadeAmount = 0.01f;
-    [SerializeField] private int fadeLengthInSeconds = 5;
 
-    [SerializeField] private AudioSource currentMusic;
+    private AudioSource currentMusic;
 
+    private const float fadeAmount = 0.01f;
+    private const int fadeLengthInSeconds = 5;
     private bool playerReachedEnd;
     private bool routineIsRunning;
 
@@ -32,11 +30,11 @@ public class DynamicMusicManager : MonoBehaviour {
                 StartCoroutine(FadeInLowMusic());
             }
 
-            else if ((PlayerDistanceToCresendo() <= 46f && PlayerDistanceToCresendo() > 6f) && (currentMusic != musicSources[1]) && !routineIsRunning) {
+            else if ((PlayerDistanceToCresendo() <= 46f && PlayerDistanceToCresendo() > 5f) && (currentMusic != musicSources[1]) && !routineIsRunning) {
                 StartCoroutine(FadeInMidMusic());
             }
 
-            else if ((PlayerDistanceToCresendo() <= 6f) && (currentMusic != musicSources[2]) && !routineIsRunning) {
+            else if ((PlayerDistanceToCresendo() <= 5f) && (currentMusic != musicSources[2]) && !routineIsRunning) {
                 playerReachedEnd = true;
                 StartCoroutine(FadeInHighMusic());
             }
@@ -97,7 +95,7 @@ public class DynamicMusicManager : MonoBehaviour {
         }
 
         currentMusic = musicSources[2];
-        Invoke("CallBackToMainMenu", 65f);
+        Invoke("CallBackToMainMenu", 60f);
         ResetMusicVolume();
     }
 
