@@ -26,6 +26,9 @@ public class WW_CentipedeMovement01 : MonoBehaviour
     [SerializeField] private bool[] rightSteps;
     [SerializeField] private bool climbingWall;
 
+
+
+    [SerializeField] float speedMult = .1f;  //Speed multiplier for rescaled character
     private void Start()
     {
         leftSteps = new bool[4];
@@ -46,6 +49,8 @@ public class WW_CentipedeMovement01 : MonoBehaviour
         rightMoveSpeed = Mathf.Clamp(rightMoveSpeed, 0, maxMoveSpeed);
         float combinedMoveSpeed = (leftMoveSpeed + rightMoveSpeed);
         GetComponent<Rigidbody>().velocity += GetComponent<Transform>().forward * combinedMoveSpeed * moveSpeed;
+        combinedMoveSpeed *= speedMult;
+
 
 
         float tempRatio = Mathf.InverseLerp(0, leftMoveSpeed + rightMoveSpeed, leftMoveSpeed);
