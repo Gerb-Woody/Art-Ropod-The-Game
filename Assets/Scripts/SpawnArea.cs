@@ -16,6 +16,7 @@ public class SpawnArea : MonoBehaviour
     public float maxY;
     public float minZ;
     public float maxZ;
+    float scaleMultiplier;
 
     [Header("Objects to Summon")]
     public GameObject[] randomObstacles;
